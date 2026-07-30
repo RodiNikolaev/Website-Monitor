@@ -1,15 +1,14 @@
 package com.manimarank.websitemonitor
 
 import android.app.Application
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.manimarank.websitemonitor.utils.Constants
 import com.manimarank.websitemonitor.utils.SharedPrefsManager
 import com.manimarank.websitemonitor.utils.Utils
 
-class MyApplication : Application(), LifecycleObserver {
+class MyApplication : Application(), DefaultLifecycleObserver {
 
     object ActivityVisibility {
         var appIsVisible: Boolean = false
@@ -20,19 +19,17 @@ class MyApplication : Application(), LifecycleObserver {
     }
 
     override fun onCreate() {
-        super.onCreate()
+        super<Application>.onCreate()
         SharedPrefsManager.init(this)
         Utils.enableDarkMode(SharedPrefsManager.customPrefs.getBoolean(Constants.IS_DARK_MODE_ENABLED, false))
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    fun onAppBackgrounded() {
-        ActivityVisibility.pauseApp()
+    override fun onStart(owner: LifecycleOwner) {
+        ActivityVisibility.resumeApp()
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    fun onAppForegrounded() {
-        ActivityVisibility.resumeApp()
+    override fun onStop(owner: LifecycleOwner) {
+        ActivityVisibility.pauseApp()
     }
 }

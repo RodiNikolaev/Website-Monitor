@@ -6,6 +6,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.manimarank.websitemonitor.R
 import com.manimarank.websitemonitor.data.repository.WebSiteEntryRepository
+import com.manimarank.websitemonitor.utils.AlarmSoundPlayer
 import com.manimarank.websitemonitor.utils.Print
 import com.manimarank.websitemonitor.utils.Utils
 import com.manimarank.websitemonitor.utils.Utils.getStringNotWorking
@@ -49,6 +50,10 @@ class SyncWorker(appContext: Context, workerParams: WorkerParameters) :
                     applicationContext.getString(R.string.several_websites_not_reachable),
                     entriesWithFailedConnection.joinToStringDescription()
                 )
+            }
+            if (entriesWithFailedConnection.isNotEmpty()) {
+                // Long, attention-grabbing alarm tone on any failed check.
+                AlarmSoundPlayer.playFailureAlarm(applicationContext)
             }
             Result.success()
         } catch (e: Throwable) {
