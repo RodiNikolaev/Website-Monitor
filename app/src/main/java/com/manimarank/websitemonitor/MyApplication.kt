@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
+import com.manimarank.websitemonitor.utils.AlarmSoundPlayer
 import com.manimarank.websitemonitor.utils.Constants
 import com.manimarank.websitemonitor.utils.SharedPrefsManager
 import com.manimarank.websitemonitor.utils.Utils
@@ -27,6 +28,8 @@ class MyApplication : Application(), DefaultLifecycleObserver {
 
     override fun onStart(owner: LifecycleOwner) {
         ActivityVisibility.resumeApp()
+        // Silence the failure alert as soon as the user opens the app.
+        AlarmSoundPlayer.stop()
     }
 
     override fun onStop(owner: LifecycleOwner) {
