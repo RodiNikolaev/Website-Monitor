@@ -6,6 +6,9 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
+    <!-- Keeps the process alive while the failure alarm clip plays in the background. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"/>
 
     <application
         android:allowBackup="true"
@@ -42,6 +45,13 @@
             android:label="@string/action_settings"
             android:parentActivityName=".ui.home.MainActivity"
             android:windowSoftInputMode="adjustResize"/>
+
+        <!-- Declare the media-playback foreground service type on WorkManager's own service, so the
+             worker can promote to foreground while the failure alarm plays (required on Android 14+). -->
+        <service
+            android:name="androidx.work.impl.foreground.SystemForegroundService"
+            android:foregroundServiceType="mediaPlayback"
+            tools:node="merge" />
     </application>
 
 </manifest>

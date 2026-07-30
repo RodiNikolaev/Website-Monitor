@@ -29,7 +29,9 @@ object WorkManagerScheduler {
 
         WorkManager.getInstance(context).enqueueUniquePeriodicWork(
             TAG_WORK_MANAGER,
-            ExistingPeriodicWorkPolicy.REPLACE, refreshCpnWork
+            // UPDATE (WorkManager 2.8+) applies the new interval without cancelling and
+            // recreating the request, so a pending cycle isn't dropped. REPLACE is deprecated.
+            ExistingPeriodicWorkPolicy.UPDATE, refreshCpnWork
         )
 
     }

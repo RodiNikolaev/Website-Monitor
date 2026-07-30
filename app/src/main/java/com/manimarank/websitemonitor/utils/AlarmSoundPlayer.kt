@@ -9,6 +9,7 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
 import com.manimarank.websitemonitor.R
+import kotlinx.coroutines.CompletableDeferred
 
 /**
  * Plays the bundled failure alert audio ([R.raw.failure_alert]) once when a website check fails.
@@ -16,6 +17,10 @@ import com.manimarank.websitemonitor.R
  * The clip is played with [AudioAttributes.USAGE_ALARM] so it is audible even while other
  * media is silent, and it is released automatically once it finishes. Any previous playback is
  * stopped before a new one starts, so overlapping check cycles never stack players.
+ *
+ * [playFailureAlarm] is a `suspend` function that only returns once the clip has finished (or been
+ * interrupted). The caller — `SyncWorker` — stays in the foreground for that whole time, which is
+ * what keeps the OS from killing the process and cutting the sound off mid-way.
  *
  * Playback is interrupted early when:
  *  - the app is brought to the foreground (see `MyApplication.onStart`), or
@@ -25,23 +30,38 @@ object AlarmSoundPlayer {
 
     private var mediaPlayer: MediaPlayer? = null
 
+    /** Completes when the current playback finishes or is interrupted; awaited by the caller. */
+    private var playbackFinished: CompletableDeferred<Unit>? = null
+
     private var appContext: Context? = null
     private var audioManager: AudioManager? = null
     private var volumeObserver: ContentObserver? = null
     private var lastAlarmVolume: Int = -1
 
     /**
-     * Plays the failure alert once, from start to finish. Safe to call from a background worker.
+     * Plays the failure alert once, from start to finish, suspending until it completes or is
+     * interrupted. Safe to call from a background worker.
      */
+    suspend fun playFailureAlarm(context: Context) {
+        val finished = startPlayback(context) ?: return
+        try {
+            finished.await()
+        } finally {
+            stop()
+        }
+    }
+
     @Synchronized
-    fun playFailureAlarm(context: Context) {
+    private fun startPlayback(context: Context): CompletableDeferred<Unit>? {
         stop()
 
         val ctx = context.applicationContext
         appContext = ctx
 
-        try {
-            val afd = ctx.resources.openRawResourceFd(R.raw.failure_alert) ?: return
+        return try {
+            val afd = ctx.resources.openRawResourceFd(R.raw.failure_alert) ?: return null
+            val finished = CompletableDeferred<Unit>()
+            playbackFinished = finished
             mediaPlayer = MediaPlayer().apply {
                 setAudioAttributes(
                     AudioAttributes.Builder()
@@ -60,14 +80,17 @@ object AlarmSoundPlayer {
                 start()
             }
             registerVolumeObserver(ctx)
+            finished
         } catch (e: Exception) {
             Print.log("AlarmSoundPlayer failed to play: $e")
             stop()
+            null
         }
     }
 
     /**
-     * Stops and releases any active playback. Safe to call multiple times.
+     * Stops and releases any active playback and resumes any coroutine awaiting it.
+     * Safe to call multiple times and from any thread.
      */
     @Synchronized
     fun stop() {
@@ -82,6 +105,8 @@ object AlarmSoundPlayer {
         } finally {
             mediaPlayer = null
         }
+        playbackFinished?.complete(Unit)
+        playbackFinished = null
     }
 
     /**

@@ -11,6 +11,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.manimarank.websitemonitor.R
 import com.manimarank.websitemonitor.databinding.ActivitySettingsBinding
+import com.manimarank.websitemonitor.utils.Constants.DEFAULT_INTERVAL_MIN
 import com.manimarank.websitemonitor.utils.Constants.IS_DARK_MODE_ENABLED
 import com.manimarank.websitemonitor.utils.Constants.MONITORING_INTERVAL
 import com.manimarank.websitemonitor.utils.Constants.NOTIFY_ONLY_SERVER_ISSUES
@@ -73,7 +74,7 @@ class SettingsActivity : AppCompatActivity() {
         val alertBuilder = AlertDialog.Builder(this)
         alertBuilder.setTitle(getString(R.string.choose_interval))
 
-        val checkedItem = valueList.indexOf(SharedPrefsManager.customPrefs.getInt(MONITORING_INTERVAL, 60))
+        val checkedItem = valueList.indexOf(SharedPrefsManager.customPrefs.getInt(MONITORING_INTERVAL, DEFAULT_INTERVAL_MIN))
         alertBuilder.setSingleChoiceItems(
             nameList,
             checkedItem
