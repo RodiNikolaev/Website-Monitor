@@ -261,12 +261,7 @@ object Utils {
     }
 
     fun Context.getStringNotWorking(url: String): String {
-        return String.format(
-            this.getString(
-                R.string.not_working,
-                url
-            )
-        )
+        return this.getString(R.string.not_working, url)
     }
 
     fun List<WebSiteStatus>.joinToStringDescription(): String {
