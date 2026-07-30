@@ -125,6 +125,58 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/layoutBackupRestore"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:text="@string/backup_restore"
+                android:textSize="@dimen/text_normal"
+                android:textStyle="bold"
+                android:layout_height="wrap_content"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:text="@string/backup_restore_info"
+                android:layout_marginTop="4dp"
+                android:textSize="@dimen/text_small"
+                android:layout_height="wrap_content"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnExportData"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    app:cornerRadius="5dp"
+                    app:backgroundTint="@color/colorAccent"
+                    android:layout_marginEnd="5dp"
+                    android:text="@string/export_data"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnImportData"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    app:cornerRadius="5dp"
+                    app:backgroundTint="@color/colorAccent"
+                    android:layout_marginStart="5dp"
+                    android:text="@string/import_data"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
     </LinearLayout>
 
 

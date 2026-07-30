@@ -23,4 +23,10 @@ interface WebSiteEntryDao {
 
     @Query("SELECT * FROM web_site_entry WHERE is_paused = 0 ORDER BY id ASC")
     suspend fun getAllValidWebSiteEntryDirectList(): List<WebSiteEntry>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(entries: List<WebSiteEntry>)
+
+    @Query("DELETE FROM web_site_entry")
+    suspend fun clearAll()
 }
