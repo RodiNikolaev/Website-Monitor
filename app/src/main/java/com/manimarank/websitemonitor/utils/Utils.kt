@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
+import android.os.Parcelable
 import android.os.PowerManager
 import android.provider.Settings
 import android.view.View
@@ -33,6 +34,15 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.text.DateFormat
 import java.util.*
+
+/**
+ * Version-safe replacement for the deprecated [Intent.getParcelableExtra] overload.
+ * Uses the typed API on Android 13+ and falls back to the legacy call on older devices.
+ */
+inline fun <reified T : Parcelable> Intent.parcelableExtra(key: String): T? = when {
+    Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> getParcelableExtra(key, T::class.java)
+    else -> @Suppress("DEPRECATION") getParcelableExtra(key) as? T
+}
 
 object Utils {
 
@@ -61,7 +71,12 @@ object Utils {
 
         val intent = Intent(context, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        val pi = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val pi = PendingIntent.getActivity(
+            context,
+            0,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
         mBuilder.setContentIntent(pi)
         mNotificationManager.notify(Random().nextInt(), mBuilder.build())
     }
@@ -246,12 +261,7 @@ object Utils {
     }
 
     fun Context.getStringNotWorking(url: String): String {
-        return String.format(
-            this.getString(
-                R.string.not_working,
-                url
-            )
-        )
+        return this.getString(R.string.not_working, url)
     }
 
     fun List<WebSiteStatus>.joinToStringDescription(): String {

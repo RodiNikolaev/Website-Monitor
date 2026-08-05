@@ -1,10 +1,12 @@
 package com.manimarank.websitemonitor.ui.home
 
+import android.Manifest
 import android.app.Activity
 import android.app.Dialog
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.*
 import android.text.TextUtils
 import android.view.*
@@ -14,6 +16,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -36,6 +39,7 @@ import com.manimarank.websitemonitor.utils.Utils.joinToStringDescription
 import com.manimarank.websitemonitor.utils.Utils.openUrl
 import com.manimarank.websitemonitor.utils.Utils.showNotification
 import com.manimarank.websitemonitor.utils.Utils.startWorkManager
+import com.manimarank.websitemonitor.utils.parcelableExtra
 
 
 class MainActivity : AppCompatActivity(), WebSiteEntryAdapter.WebSiteEntryEvents {
@@ -49,6 +53,9 @@ class MainActivity : AppCompatActivity(), WebSiteEntryAdapter.WebSiteEntryEvents
     private lateinit var customRefreshInputBinding: CustomRefreshInputBinding
 
     private lateinit var onEditClickedResultLauncher: ActivityResultLauncher<Intent>
+
+    private val notificationPermissionLauncher: ActivityResultLauncher<String> =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { /* result handled by system UI */ }
 
     var handler = Handler(Looper.getMainLooper())
 
@@ -98,7 +105,7 @@ class MainActivity : AppCompatActivity(), WebSiteEntryAdapter.WebSiteEntryEvents
         onEditClickedResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val data: Intent? = result.data
-                val currentWebSiteEntry = data?.getParcelableExtra<WebSiteEntry>(Constants.INTENT_OBJECT)!!
+                val currentWebSiteEntry = data?.parcelableExtra<WebSiteEntry>(Constants.INTENT_OBJECT)!!
                 viewModel.updateWebSiteEntry(currentWebSiteEntry)
             }
         }
@@ -107,7 +114,7 @@ class MainActivity : AppCompatActivity(), WebSiteEntryAdapter.WebSiteEntryEvents
         val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val data: Intent? = result.data
-                val webSiteEntry = data?.getParcelableExtra<WebSiteEntry>(Constants.INTENT_OBJECT)!!
+                val webSiteEntry = data?.parcelableExtra<WebSiteEntry>(Constants.INTENT_OBJECT)!!
                 viewModel.saveWebSiteEntry(webSiteEntry)
             }
         }
@@ -219,11 +226,25 @@ class MainActivity : AppCompatActivity(), WebSiteEntryAdapter.WebSiteEntryEvents
 
         startWorkManager(this)
 
+        requestNotificationPermissionIfNeeded()
+
         Handler(Looper.getMainLooper()).postDelayed({
             if (!isDestroyed)
                 askToRunBackground()
         }, 1000)
 
+    }
+
+    private fun requestNotificationPermissionIfNeeded() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val isGranted = ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+            if (!isGranted) {
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

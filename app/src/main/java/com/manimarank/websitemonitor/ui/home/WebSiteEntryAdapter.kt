@@ -8,15 +8,11 @@ import android.widget.Filterable
 import android.widget.PopupMenu
 import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.manimarank.websitemonitor.R
 import com.manimarank.websitemonitor.data.db.WebSiteEntry
 import com.manimarank.websitemonitor.databinding.ItemWebsiteRowBinding
-import com.manimarank.websitemonitor.utils.Print
 import com.manimarank.websitemonitor.utils.Utils
 import com.manimarank.websitemonitor.utils.Utils.currentDateTime
-import com.manimarank.websitemonitor.utils.Utils.removeUrlProto
 import java.util.*
 
 /**
@@ -54,14 +50,6 @@ class WebSiteEntryAdapter(todoEvents: WebSiteEntryEvents) : RecyclerView.Adapter
 
                 binding.txtWebSite.text = webSiteEntry.name
                 binding.txtUrl.text = webSiteEntry.url
-
-                val iconUrl = "https://icons.duckduckgo.com/ip3/${webSiteEntry.url.removeUrlProto()}.ico"
-                try {
-                    Glide.with(binding.imgLogo.context).load(iconUrl).apply(RequestOptions.circleCropTransform()).placeholder(R.mipmap.ic_launcher_round).into(binding.imgLogo)
-                } catch (e: Exception) {
-                    Print.log(e.message ?: "Exception occured when using Glide to load Website Logo.")
-                }
-
 
                 binding.txtStatus.text = HtmlCompat.fromHtml("<b>Status :</b> ${webSiteEntry.status ?: "000"} - ${Utils.getStatusMessage(webSiteEntry.status)}<br><b>Last Update :</b> ${webSiteEntry.updatedAt ?: currentDateTime()}", HtmlCompat.FROM_HTML_MODE_LEGACY)
                 binding.imgIndicator.setImageResource(if(webSiteEntry.status != 200) R.drawable.ic_alert else R.drawable.ic_success)

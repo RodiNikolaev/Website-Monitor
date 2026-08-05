@@ -125,105 +125,55 @@
 
         </LinearLayout>
 
-        <TextView
-            android:text="**************"
-            android:textAlignment="center"
+        <LinearLayout
+            android:id="@+id/layoutBackupRestore"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:ignore="HardcodedText" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
             android:orientation="vertical"
-            android:layout_height="wrap_content">
+            android:padding="10dp">
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:text="@string/credits"
-                android:textStyle="bold"
-                android:textSize="@dimen/text_normal"
                 android:layout_width="match_parent"
+                android:text="@string/backup_restore"
+                android:textSize="@dimen/text_normal"
+                android:textStyle="bold"
                 android:layout_height="wrap_content"/>
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:autoLink="web"
-                android:padding="10dp"
-                android:text="@string/icon_credits"
-                android:textSize="14sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:orientation="vertical"
-            android:layout_height="wrap_content">
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:text="@string/source_code"
-                android:textStyle="bold"
-                android:textSize="@dimen/text_normal"
-                android:layout_width="match_parent"
+                android:text="@string/backup_restore_info"
+                android:layout_marginTop="4dp"
+                android:textSize="@dimen/text_small"
                 android:layout_height="wrap_content"/>
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:autoLink="web"
-                android:padding="10dp"
-                android:text="@string/source_code_link"
-                android:textSize="@dimen/text_small"/>
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
 
-        </LinearLayout>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnExportData"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    app:cornerRadius="5dp"
+                    app:backgroundTint="@color/colorAccent"
+                    android:layout_marginEnd="5dp"
+                    android:text="@string/export_data"/>
 
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:orientation="vertical"
-            android:layout_height="wrap_content">
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:text="@string/support_development"
-                android:textStyle="bold"
-                android:textSize="@dimen/text_normal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:autoLink="web"
-                android:padding="10dp"
-                android:text="@string/support_development_link"
-                android:textSize="@dimen/text_small"/>
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/contributors_main_title"
-                android:textStyle="bold"
-                android:textSize="@dimen/text_normal"/>
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:autoLink="web"
-                android:padding="10dp"
-                android:text="@string/contributors_main_manimaran"
-                android:textSize="@dimen/text_small"/>
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:autoLink="web"
-                android:padding="10dp"
-                android:text="@string/contributors_main_akito"
-                android:textSize="@dimen/text_small"/>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnImportData"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    app:cornerRadius="5dp"
+                    app:backgroundTint="@color/colorAccent"
+                    android:layout_marginStart="5dp"
+                    android:text="@string/import_data"/>
+            </LinearLayout>
 
         </LinearLayout>
 

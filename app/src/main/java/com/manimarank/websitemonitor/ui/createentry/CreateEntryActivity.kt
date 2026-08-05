@@ -9,6 +9,7 @@ import com.manimarank.websitemonitor.databinding.ActivityCreateEntryBinding
 import com.manimarank.websitemonitor.utils.Constants
 import com.manimarank.websitemonitor.utils.Utils
 import com.manimarank.websitemonitor.utils.Utils.isValidUrl
+import com.manimarank.websitemonitor.utils.parcelableExtra
 
 class CreateEntryActivity : AppCompatActivity() {
 
@@ -27,7 +28,7 @@ class CreateEntryActivity : AppCompatActivity() {
         //Prepopulate existing title and content from intent
         val intent = intent
         if (intent != null && intent.hasExtra(Constants.INTENT_OBJECT)) {
-            webSiteEntry = intent.getParcelableExtra(Constants.INTENT_OBJECT)
+            webSiteEntry = intent.parcelableExtra(Constants.INTENT_OBJECT)
             webSiteEntry?.let { prePopulateData(it) }
         }
 

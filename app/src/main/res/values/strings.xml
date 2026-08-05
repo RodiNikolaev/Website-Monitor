@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Website Monitor</string>
+    <string name="app_name">Website monitor</string>
     <string name="action_settings">Settings</string>
 
     <string name="name">Name</string>
@@ -62,4 +62,15 @@
     <string name="enable_dark_mode">Enable dark mode</string>
     <string name="disable_dark_mode">Disable dark mode</string>
     <string name="enable_or_disable_dark_mode">Enable/Disable Dark mode</string>
+
+    <string name="backup_restore">Backup &amp; Restore</string>
+    <string name="backup_restore_info">Save your sites and settings to a file, and restore them after reinstalling the app.</string>
+    <string name="export_data">Export</string>
+    <string name="import_data">Import</string>
+    <string name="backup_default_file_name">website-monitor-backup.json</string>
+    <string name="backup_export_success">Backup saved</string>
+    <string name="backup_import_success">Restored %d site(s)</string>
+    <string name="backup_error">Backup failed. Please try again.</string>
+    <string name="import_confirm_title">Import backup?</string>
+    <string name="import_confirm_message">This will replace your current sites and settings with the contents of the selected file.</string>
 </resources>
