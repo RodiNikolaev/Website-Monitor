@@ -58,6 +58,11 @@ object AlarmSoundPlayer {
         val ctx = context.applicationContext
         appContext = ctx
 
+        // Make sure the clip is actually audible: raise the alarm-stream volume to its maximum
+        // before playing. Done before registering the volume observer so this programmatic change
+        // isn't mistaken for a user key press. The level is intentionally left raised afterwards.
+        raiseAlarmVolumeToMax(ctx)
+
         return try {
             val afd = ctx.resources.openRawResourceFd(R.raw.failure_alert) ?: return null
             val finished = CompletableDeferred<Unit>()
@@ -107,6 +112,23 @@ object AlarmSoundPlayer {
         }
         playbackFinished?.complete(Unit)
         playbackFinished = null
+    }
+
+    /**
+     * Raises the alarm-stream volume to its maximum so the failure alert is heard even if the user
+     * had turned the alarm volume down (or to 0). The raised level is not restored afterwards.
+     * `STREAM_ALARM` is exempt from Do-Not-Disturb policy, so no extra permission is required.
+     */
+    private fun raiseAlarmVolumeToMax(context: Context) {
+        try {
+            val am = context.getSystemService(Context.AUDIO_SERVICE) as? AudioManager ?: return
+            val max = am.getStreamMaxVolume(AudioManager.STREAM_ALARM)
+            if (am.getStreamVolume(AudioManager.STREAM_ALARM) < max) {
+                am.setStreamVolume(AudioManager.STREAM_ALARM, max, 0)
+            }
+        } catch (e: Exception) {
+            Print.log("AlarmSoundPlayer failed to raise alarm volume: $e")
+        }
     }
 
     /**
